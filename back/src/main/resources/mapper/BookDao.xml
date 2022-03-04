@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tsl.campus_book_sharing_platform.book.dao.BookDao">
+
+    <resultMap type="tsl.campus_book_sharing_platform.book.entity.Book" id="BookMap">
+        <result property="bookId" column="book_id" jdbcType="VARCHAR"/>
+        <result property="bookName" column="book_name" jdbcType="VARCHAR"/>
+        <result property="bookCategory" column="book_category" jdbcType="VARCHAR"/>
+        <result property="bookIntroduction" column="book_Introduction" jdbcType="VARCHAR"/>
+        <result property="bookNumber" column="book_number" jdbcType="INTEGER"/>
+        <result property="bookBorrowed" column="book_borrowed" jdbcType="INTEGER"/>
+        <result property="bookAppointment" column="book_appointment" jdbcType="INTEGER"/>
+        <result property="bookAvailable" column="book_available" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BookMap">
+        select
+          book_id, book_name, book_category, book_Introduction, book_number, book_borrowed, book_appointment, book_available
+        from book
+        where book_id = #{bookId}
+    </select>
+
+    <!--条件查询-->
+    <select id="queryAll" resultMap="BookMap">
+        select
+          book_id, book_name, book_category, book_Introduction, book_number, book_borrowed, book_appointment, book_available
+        from book
+        <where>
+            <if test="bookId != null and bookId != ''">
+                book_id = #{bookId}
+            </if>
+            <if test="bookName != null and bookName != ''">
+                and book_name like concat('%',#{bookName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="bookCategory != null and bookCategory != ''">
+                and book_category like concat('%',#{bookCategory,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="bookIntroduction != null and bookIntroduction != ''">
+                and book_Introduction like concat('%',#{bookIntroduction,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="bookNumber != null">
+                and book_number like concat('%',#{bookNumber,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="bookBorrowed != null">
+                and book_borrowed like concat('%',#{bookBorrowed,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="bookAppointment != null">
+                and book_appointment like concat('%',#{bookAppointment,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="bookAvailable != null">
+                and book_available like concat('%',#{bookAvailable,jdbcType=VARCHAR},'%')
+            </if>
+        </where>
+    </select>
+
+
+    <!--新增-->
+    <insert id="insert" keyProperty="bookId" useGeneratedKeys="true">
+        insert into book(book_id,book_name, book_category, book_Introduction, book_number, book_borrowed, book_appointment, book_available)
+        values (#{bookId},#{bookName}, #{bookCategory}, #{bookIntroduction}, #{bookNumber}, #{bookBorrowed}, #{bookAppointment}, #{bookAvailable})
+    </insert>
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update book
+        <set>
+            <if test="bookName != null and bookName != ''">
+                book_name = #{bookName},
+            </if>
+            <if test="bookCategory != null and bookCategory != ''">
+                book_category = #{bookCategory},
+            </if>
+            <if test="bookIntroduction != null and bookIntroduction != ''">
+                book_Introduction = #{bookIntroduction},
+            </if>
+            <if test="bookNumber != null">
+                book_number = #{bookNumber},
+            </if>
+            <if test="bookBorrowed != null">
+                book_borrowed = #{bookBorrowed},
+            </if>
+            <if test="bookAppointment != null">
+                book_appointment = #{bookAppointment},
+            </if>
+            <if test="bookAvailable != null">
+                book_available = #{bookAvailable}
+            </if>
+        </set>
+        where book_id = #{bookId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from book where book_id = #{bookId}
+    </delete>
+
+    <!--查询书籍可借阅数量-->
+    <select id="selectByBookId" resultType="int">
+        select book_available from book where book_id = #{bookId}
+    </select>
+
+    <select id="selectByBookIdForNumber" resultType="int">
+        select count(*) from book where book_id = #{bookId}
+    </select>
+
+    <select id="selectByBookNameForNumber" resultType="int">
+        select count(*) from book where book_name = #{bookName}
+    </select>
+</mapper>
+

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tsl.campus_book_sharing_platform.userBook.dao.UserBookDao">
+
+    <resultMap type="tsl.campus_book_sharing_platform.userBook.entity.UserBook" id="UserBookMap">
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="bookId" column="book_id" jdbcType="VARCHAR"/>
+        <result property="state" column="state" jdbcType="VARCHAR"/>
+        <result property="appointmentTime" column="appointment_time" jdbcType="DATE"/>
+        <result property="expirationTime" column="expiration_time" jdbcType="DATE"/>
+    </resultMap>
+
+
+    <!--新增-->
+    <insert id="insert" keyProperty="" useGeneratedKeys="true">
+        insert into user_book(user_id, book_id,state, appointment_time, expiration_time)
+        values (#{userId}, #{bookId}, #{state}, #{appointmentTime}, #{expirationTime})
+    </insert>
+
+    <delete id="delete">
+        delete from user_book where user_id = #{userId} and book_id = #{bookId} and state = '申请中'
+    </delete>
+
+    <update id="updateBorrowing">
+        update user_book set state = '已借阅' where state = '申请中' and user_id = #{userId} and book_id = #{bookId}
+    </update>
+
+    <update id="updateRestore">
+        update user_book set state = '已归还' where state = '已借阅' and user_id = #{userId} and book_id = #{bookId}
+    </update>
+
+    <select id="selectStateByUserId" resultType="int">
+        select count(*) from user_book where state in ('申请中','已借阅') and user_id = #{userId}
+    </select>
+
+<!-- order by FIELD(字段名,'参数1','参数2',...) 自定义某个字段按照参数1，参数2 序列排序 -->
+    <select id="selectAllByUserIdAndState" resultMap="UserBookMap">
+        select * from user_book
+        <where>
+            <if test="state != null and state != '' and state != '全部'">
+                and state = #{state}
+            </if>
+            <if test="state == null or state == '' and state != '全部'">
+                and state in ('申请中','已借阅')
+            </if>
+            <if test="userId != null and userId != ''">
+                and user_id like concat('%',#{userId,jdbcType=VARCHAR},'%')
+            </if>
+        </where>
+        order by FIELD(state,'申请中','已借阅','已归还','已过期'),appointment_time
+    </select>
+
+    <select id="selectStateByUserIdAndBookId" resultType="int">
+        select count(*) from user_book where state in ('申请中','已借阅') and user_id = #{userId} and book_id = #{bookId}
+    </select>
+
+    <select id="selectStateByUserIdAndBookIds" resultType="int">
+        select count(*) from user_book where state = '申请中' and user_id = #{userId} and book_id = #{bookId}
+    </select>
+
+    <select id="selectStateByUserIdAndBookIdes" resultType="int">
+        select count(*) from user_book where state = '已借阅' and user_id = #{userId} and book_id = #{bookId}
+    </select>
+
+<!-- <= 无法直接使用，需要转译（&gt; 为大于）、（&lt; 为小于）或者使用 <![CDATA[  ]]> 包含，例：<![CDATA[ <= ]]> -->
+    <update id="checkDate">
+        update user_book set state = '已过期' where state = '申请中' and #{date} >= expiration_time
+    </update>
+</mapper>
+

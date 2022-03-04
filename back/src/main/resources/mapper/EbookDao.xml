@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tsl.campus_book_sharing_platform.ebook.dao.EbookDao">
+
+    <resultMap type="tsl.campus_book_sharing_platform.ebook.entity.Ebook" id="EbookMap">
+        <result property="ebookId" column="ebook_id" jdbcType="VARCHAR"/>
+        <result property="ebookName" column="ebook_name" jdbcType="VARCHAR"/>
+        <result property="ebookCategory" column="ebook_category" jdbcType="VARCHAR"/>
+        <result property="collectionTimes" column="collection_times" jdbcType="INTEGER"/>
+        <result property="downloadTimes" column="download_times" jdbcType="INTEGER"/>
+        <result property="ebookBriefInformation" column="ebook_brief_information" jdbcType="VARCHAR"/>
+        <result property="downloadUserId" column="download_user_id" jdbcType="VARCHAR"/>
+        <result property="downloadUserName" column="download_user_name" jdbcType="VARCHAR"/>
+        <result property="ebookSize" column="ebook_size" jdbcType="VARCHAR"/>
+        <result property="ebookState" column="ebook_state" jdbcType="VARCHAR"/>
+        <result property="informationState" column="information_state" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--上传列表-条件查询-->
+    <select id="uploadListQueryAll" resultMap="EbookMap">
+        select
+        ebook_id, ebook_name, ebook_category, collection_times, download_times, ebook_brief_information, download_user_id, download_user_name,ebook_size,ebook_state,information_state
+        from ebook
+        <where>
+            <if test="downloadUserId != null and downloadUserId != ''">
+                download_user_id = #{downloadUserId}
+            </if>
+            <if test="ebookState != null and ebookState != ''">
+                and ebook_state = #{ebookState}
+            </if>
+            <if test="ebookCategory != null and ebookCategory != ''">
+                and ebook_category like concat('%',#{ebookCategory,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="ebookName != null and ebookName != ''">
+                and ebook_name like concat('%',#{ebookName,jdbcType=VARCHAR},'%')
+            </if>
+            and information_state = '未删除'
+        </where>
+    </select>
+
+    <!--上传列表-删除信息-->
+    <update id="uploadListDelete">
+        update ebook
+        <set>
+            information_state = '已删除',
+        </set>
+        where ebook_id = #{ebookId}
+    </update>
+
+    <!--修改电子书状态-->
+    <update id="update">
+        update ebook
+        <set>
+            <if test="state != null and state != ''">
+                ebook_state = #{state}
+            </if>
+        </set>
+        where ebook_id = #{ebookId}
+    </update>
+
+    <!--上传列表-新增-->
+    <insert id="uploadListInsert" keyProperty="ebookId" useGeneratedKeys="true">
+        insert into ebook(ebook_id,ebook_name, ebook_category, collection_times, download_times, ebook_brief_information, download_user_id, download_user_name,ebook_size,ebook_state,information_state)
+        values (#{ebookId},#{ebookName}, #{ebookCategory}, #{collectionTimes}, #{downloadTimes}, #{ebookBriefInformation},  #{downloadUserId}, #{downloadUserName}, #{ebookSize}, #{ebookState}, #{informationState})
+    </insert>
+
+    <!--上传列表-书库重复查询-->
+    <select id="uploadListSum" resultType="int">
+        select count(ebook_id) from ebook where (ebook_name = #{ebookName} and ebook_state = '上传成功') or (ebook_name = #{ebookName} and download_user_id = #{downloadUserId} and ebook_state != '已取消')
+    </select>
+
+    <!--审核列表-条件查询-->
+    <select id="auditListQueryAll" resultMap="EbookMap">
+        select
+        ebook_id, ebook_name, ebook_category, collection_times, download_times, ebook_brief_information, download_user_id, download_user_name,ebook_size,ebook_state,information_state
+        from ebook
+        <where>
+            <if test="ebookCategory != null and ebookCategory != ''">
+                and ebook_category like concat('%',#{ebookCategory,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="ebookName != null and ebookName != ''">
+                and ebook_name like concat('%',#{ebookName,jdbcType=VARCHAR},'%')
+            </if>
+            and ebook_state = '审核中'
+        </where>
+    </select>
+</mapper>
+

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tsl.campus_book_sharing_platform.user.dao.UserDao">
+
+    <resultMap type="tsl.campus_book_sharing_platform.user.entity.User" id="UserMap">
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
+        <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+        <result property="permissionsId" column="permissions_id" jdbcType="VARCHAR"/>
+        <result property="portrait" column="portrait" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="BookCategory" type="tsl.campus_book_sharing_platform.user.entity.BookCategory">
+        <result property="bookCategory" column="book_category" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询用户信息-->
+    <select id="findPassword" resultMap="UserMap">
+        select * from user where user_id = #{userId}
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserMap">
+        select user_id,
+               user_name,
+               user_password
+        from user
+        where user_id = #{userId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserMap">
+        select
+        user_id, user_name, user_password
+        from user
+        <where>
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="userPassword != null and userPassword != ''">
+                and user_password = #{userPassword}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from user
+        <where>
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="userPassword != null and userPassword != ''">
+                and user_password = #{userPassword}
+            </if>
+        </where>
+    </select>
+
+    <!--注册-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into user(user_id,user_name, user_password,role_name,permissions_id,portrait)
+        values (#{userId},#{userName}, #{userPassword},#{roleName},#{permissionsId},#{portrait})
+    </insert>
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update user
+        <set>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="userPassword != null and userPassword != ''">
+                user_password = #{userPassword},
+            </if>
+            <if test="roleName != null and roleName != ''">
+                role_name = #{roleName},
+            </if>
+            <if test="permissionsId != null and permissionsId != ''">
+                permissions_id = #{permissionsId},
+            </if>
+            <if test="portrait != null and portrait != ''">
+                portrait = #{portrait},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from user
+        where user_id = #{userId}
+    </delete>
+
+    <!--添加书籍类型-->
+    <insert id="insertBookCategory">
+        insert into book_category(book_category) values (#{bookCategory})
+    </insert>
+
+    <!--查询指定书籍类型的数量-->
+    <select id="selectSumBookCategory" resultType="int">
+        select COUNT(*) from book_category where book_category = #{bookCategory}
+    </select>
+
+    <!--查询所有书籍分类-->
+    <select id="selectBookCategory" resultMap="BookCategory">
+        select book_category from book_category
+    </select>
+
+    <!--删除书籍分类-->
+    <delete id="deleteBookCategory">
+        delete
+        from book_category
+        where book_category = #{bookCategory}
+    </delete>
+
+    <!--删除书籍分类后修改书籍中的分类-->
+    <update id="deleteBookCategoryToUpdateBook">
+        update book
+        <set>
+            <if test="bookCategory != null and bookCategory != ''">
+                book_category = '无类别',
+            </if>
+        </set>
+        where book_category = #{bookCategory}
+    </update>
+
+    <!--删除书籍分类后修改电子书中的分类-->
+    <update id="deleteBookCategoryToUpdateEbook">
+        update ebook
+        <set>
+            <if test="bookCategory != null and bookCategory != ''">
+                book_category = '无类别',
+            </if>
+        </set>
+        where book_category = #{bookCategory}
+    </update>
+
+    <!--删除书籍分类后修改电子书架中的分类-->
+    <update id="deleteBookCategoryToUpdateEbookShelf">
+        update ebook_shelf
+        <set>
+            <if test="bookCategory != null and bookCategory != ''">
+                ebook_category = '无类别',
+            </if>
+        </set>
+        where ebook_category = #{bookCategory}
+    </update>
+
+    <!--修改指定的图书类型-->
+    <update id="updateBookCategory">
+        update book_category
+        <set>
+            <if test="newBookCategory != null and newBookCategory != ''">
+                book_category = #{newBookCategory},
+            </if>
+        </set>
+        where book_category = #{oldBookCategory}
+    </update>
+
+    <!--修改指定的图书类型后修改图书类型-->
+    <update id="updateBookCategoryToUpdateBook">
+        update book
+        <set>
+            <if test="newBookCategory != null and newBookCategory != ''">
+                book_category = #{newBookCategory},
+            </if>
+        </set>
+        where book_category = #{oldBookCategory}
+    </update>
+
+    <!--修改指定的图书类型后修改电子书类型-->
+    <update id="updateBookCategoryToUpdateEbook">
+        update ebook
+        <set>
+            <if test="newBookCategory != null and newBookCategory != ''">
+                ebook_category = #{newBookCategory},
+            </if>
+        </set>
+        where ebook_category = #{oldBookCategory}
+    </update>
+
+    <!--修改指定的图书类型后修改电子书架类型-->
+    <update id="updateBookCategoryToUpdateEbookShelf">
+        update ebook_shelf
+        <set>
+            <if test="newBookCategory != null and newBookCategory != ''">
+                ebook_category = #{newBookCategory},
+            </if>
+        </set>
+        where ebook_category = #{oldBookCategory}
+    </update>
+</mapper>
+

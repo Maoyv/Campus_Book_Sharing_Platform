@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tsl.campus_book_sharing_platform.ebookShelf.dao.EbookShelfDao">
+
+    <resultMap type="tsl.campus_book_sharing_platform.ebookShelf.entity.EbookShelf" id="EbookShelfMap">
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="ebookId" column="ebook_id" jdbcType="VARCHAR"/>
+        <result property="ebookCategory" column="ebook_category" jdbcType="VARCHAR"/>
+        <result property="ebookSize" column="ebook_size" jdbcType="VARCHAR"/>
+        <result property="ebookRead" column="ebook_read" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+</mapper>
+

@@ -1,0 +1,30 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+import getters from './getters'
+import app from './modules/app'
+import settings from './modules/settings'
+import user from './modules/user'
+import permission from "@/store/modules/permission";
+
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
+  modules: {
+    app,
+    settings,
+    user,
+    permission,
+  },
+  getters,
+  // 控制变量刷新页面
+  state: {
+    key: Date.now()
+  },
+  mutations: {
+    increment(state) {
+      state.key=Date.now();
+    }
+  }
+})
+
+export default store

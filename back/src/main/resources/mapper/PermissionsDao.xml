@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tsl.campus_book_sharing_platform.permissions.dao.PermissionsDao">
+
+    <resultMap type="tsl.campus_book_sharing_platform.permissions.entity.Permissions" id="PermissionsMap">
+        <result property="permissionsId" column="permissions_id" jdbcType="VARCHAR"/>
+        <result property="permissionsName" column="permissions_name" jdbcType="VARCHAR"/>
+        <result property="permissionsCoding" column="permissions_coding" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryByPermissionsId" resultType="string">
+        select permissions_coding
+        from permissions
+        where permissions_id = #{permissionsId}
+    </select>
+
+
+</mapper>
+
