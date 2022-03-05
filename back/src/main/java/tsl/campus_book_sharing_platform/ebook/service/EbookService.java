@@ -3,7 +3,6 @@ package tsl.campus_book_sharing_platform.ebook.service;
 import tsl.campus_book_sharing_platform.uitl.ResultFormat;
 
 import javax.servlet.http.HttpSession;
-
 /**
  * (Ebook)表服务接口
  *
@@ -55,5 +54,49 @@ public interface EbookService {
      * @return 对象列表
      */
     ResultFormat auditListQueryAll(String ebookCategory,String ebookName,HttpSession session);
+
+    /**
+     * 书库-条件查询
+     *
+     * @param ebookCategory   电子书分类
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    ResultFormat libraryQueryAll(String ebookCategory, String ebookName,HttpSession session);
+
+    /**
+     * 下载——下载数+1
+     *
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    void download(String ebookName);
+
+    /**
+     * 书库-收藏
+     *
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    ResultFormat libraryCollection(String ebookName,HttpSession session);
+
+    /**
+     * 书库-修改
+     *
+     * @param ebookName   电子书名
+     * @param ebookBriefInformation   电子书简介
+     * @param ebookCategory   电子书分类
+     * @return 对象列表
+     */
+    ResultFormat libraryUpdate(String ebookName,String ebookBriefInformation,String ebookCategory,HttpSession session);
+
+    /**
+     * 书库-删除
+     *
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    ResultFormat libraryDelete(String ebookName,HttpSession session);
+
 
 }

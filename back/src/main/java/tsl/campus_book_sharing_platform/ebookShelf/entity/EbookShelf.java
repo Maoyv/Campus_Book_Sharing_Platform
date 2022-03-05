@@ -18,9 +18,9 @@ public class EbookShelf implements Serializable {
      */
     private String userId;
     /**
-     * 电子书ID
+     * 电子书名称
      */
-    private String ebookId;
+    private String ebookName;
     /**
      * 电子书分类
      */
@@ -33,6 +33,10 @@ public class EbookShelf implements Serializable {
      * 阅读进度
      */
     private Integer ebookRead;
+    /**
+     * 总页数
+     */
+    private Integer ebookPage;
 
 }
 

@@ -92,7 +92,7 @@
     <!--删除电子书信息弹窗-->
     <el-dialog title="提示" width="35%" :visible.sync="deleteEbookDialog">
       <div>
-        <span style="font-size: 24px">即将执行取消上传电子书《{{ebookName}}》的操作，请确定是否执行</span>
+        <span style="font-size: 24px">即将执行删除电子书《{{ebookName}}》的电子书上传记录操作，请确定是否执行</span>
       </div>
 
       <span slot="footer" class="dialog-footer">
@@ -104,7 +104,7 @@
     <!--取消上传-->
     <el-dialog title="提示" width="35%" :visible.sync="cancelEbookDialog">
       <div>
-        <span style="font-size: 24px">即将执行删除电子书《{{ebookName}}》的电子书上传记录操作，请确定是否执行</span>
+        <span style="font-size: 24px">即将执行取消上传电子书《{{ebookName}}》的操作，请确定是否执行</span>
       </div>
 
       <span slot="footer" class="dialog-footer">
@@ -285,7 +285,7 @@ export default {
     openIntroduction(row){
       this.ebookBriefInformationDialog = true
       this.ebookBriefInformation = row.ebookBriefInformation
-      this.ebookBriefInformationDialogTitle = "电子书名称："+row.bookName
+      this.ebookBriefInformationDialogTitle = "电子书名称："+row.ebookName
     },
     // 按钮 —— 删除电子书
     deleteEbook(row){
@@ -331,7 +331,7 @@ export default {
     // 事件 —— 上传电子书
     insertsEbook(){
       if(this.fileList === []){
-        this.$message.error('请先输入选取需要上传的电子书')
+        this.$message.error('请先选取需要上传的电子书')
       }else {
         if(this.ebookBriefInformation === '' || this.ebookBriefInformation === null || this.ebookBriefInformation === undefined){
           this.$message.error('请先输入电子书简介')

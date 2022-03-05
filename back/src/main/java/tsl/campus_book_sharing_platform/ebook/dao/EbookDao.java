@@ -63,5 +63,82 @@ public interface EbookDao {
      */
     List<Ebook> auditListQueryAll(String ebookCategory,String ebookName);
 
+    /**
+     * 书库-条件查询
+     *
+     * @param ebookCategory   电子书分类
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    List<Ebook> libraryQueryAll(String ebookCategory,String ebookName);
+
+    /**
+     * 下载——下载数+1
+     *
+     * @param downloadTimes   下载次数
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    void download(Integer downloadTimes,String ebookName);
+
+    /**
+     * 收藏——收藏数+1
+     *
+     * @param collectionTimes   收藏次数
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    void collection(Integer collectionTimes,String ebookName);
+
+    /**
+     * 取消收藏——收藏数-1
+     *
+     * @param collectionTimes   收藏次数
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    void cancelCollection(Integer collectionTimes,String ebookName);
+
+    /**
+     * 收藏次数查询
+     *
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    Integer selectCollection(String ebookName);
+
+    /**
+     * 下载次数查询
+     *
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    Integer selectDownload(String ebookName);
+
+    /**
+     * 根据电子书名查询电子书信息
+     *
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    Ebook selectEbook(String ebookName);
+
+    /**
+     * 根据电子书名删除电子书信息
+     *
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    void libraryDelete(String ebookName);
+
+    /**
+     * 根据电子书名修改电子书信息
+     *
+     * @param ebookName   电子书名称
+     * @param ebookBriefInformation   电子书简介
+     * @param ebookCategory   电子书分类
+     * @return 对象列表
+     */
+    void libraryUpdate(String ebookName,String ebookBriefInformation, String ebookCategory);
 }
 

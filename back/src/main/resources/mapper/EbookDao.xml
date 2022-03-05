@@ -84,5 +84,79 @@
             and ebook_state = '审核中'
         </where>
     </select>
+
+    <!--书库-条件查询-->
+    <select id="libraryQueryAll" resultMap="EbookMap">
+        select
+        ebook_id, ebook_name, ebook_category, collection_times, download_times, ebook_brief_information, download_user_id, download_user_name,ebook_size,ebook_state,information_state
+        from ebook
+        <where>
+            <if test="ebookCategory != null and ebookCategory != ''">
+                and ebook_category like concat('%',#{ebookCategory,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="ebookName != null and ebookName != ''">
+                and ebook_name like concat('%',#{ebookName,jdbcType=VARCHAR},'%')
+            </if>
+            and ebook_state = '上传成功'
+        </where>
+    </select>
+
+    <!--下载——下载数+1-->
+    <update id="download">
+        update ebook
+        set download_times = #{downloadTimes}
+        where ebook_name = #{ebookName}
+    </update>
+
+    <!--收藏——收藏数+1-->
+    <update id="collection">
+        update ebook
+        set collection_times = #{collectionTimes}
+        where ebook_name = #{ebookName}
+    </update>
+
+    <!--取消收藏——收藏数-1-->
+    <update id="cancelCollection">
+        update ebook
+        set collection_times = #{collectionTimes}
+        where ebook_name = #{ebookName}
+    </update>
+
+    <!--收藏次数查询-->
+    <select id="selectCollection" resultType="integer">
+        select collection_times from ebook where ebook_name = #{ebookName}
+    </select>
+
+    <!--下载次数查询-->
+    <select id="selectDownload" resultType="integer">
+        select download_times from ebook where ebook_name = #{ebookName}
+    </select>
+
+    <!--根据电子书名查询电子书信息-->
+    <select id="selectEbook" resultMap="EbookMap">
+        select
+        ebook_id, ebook_name, ebook_category, collection_times, download_times, ebook_brief_information, download_user_id, download_user_name,ebook_size,ebook_state,information_state
+        from ebook where ebook_name = #{ebookName}
+    </select>
+
+    <!--根据电子书名删除电子书信息-->
+    <delete id="libraryDelete">
+        delete from ebook where ebook_name = #{ebookName}
+    </delete>
+
+    <!--根据电子书名修改电子书信息-->
+    <update id="libraryUpdate">
+        update ebook
+        <set>
+            <if test="ebookBriefInformation != null and ebookBriefInformation != ''">
+                ebook_brief_information = #{ebookBriefInformation}
+            </if>
+            <if test="ebookCategory != null and ebookCategory != ''">
+                ebook_category = #{ebookCategory}
+            </if>
+        </set>
+        where ebook_name = #{ebookName}
+    </update>
+
 </mapper>
 

@@ -18,7 +18,7 @@
     </div>
 
     <div style="width: 1600px; top: 0;bottom: 0;left: 0;right: 0;margin: 35px auto auto;">
-      <!--管理员登录表单-->
+      <!--登录表单-->
       <el-table  :data="ebooks.slice((currentPage-1)*pageSize,currentPage*pageSize)" height="659px" border style="width: 100%">
         <el-table-column align="center" fixed prop="ebookId" sortable label="电子书ID"/>
         <el-table-column align="center" fixed prop="ebookName" sortable label="电子名称"/>
@@ -32,9 +32,9 @@
             <el-divider direction="vertical"></el-divider>
             <el-button   type="text" size="small">审核</el-button>
             <el-divider direction="vertical"></el-divider>
-            <el-button   type="text" size="small">通过</el-button>
+            <el-button   type="text" size="small" @click="ebookAdopts(scope.row)">通过</el-button>
             <el-divider direction="vertical"></el-divider>
-            <el-button   type="text" size="small">驳回</el-button>
+            <el-button   type="text" size="small" @click="ebookRejects(scope.row)">驳回</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -64,12 +64,36 @@
       </span>
     </el-dialog>
 
+    <!--审核列表-上传成功-->
+    <el-dialog title="提示" width="50%" :visible.sync="ebookAdopt">
+      <div style="margin: 10px">
+        <span style="font-size: 24px">即将执行通过电子书《{{ebookNames}}》审核的操作，请确定是否执行</span>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="ebooksAdopt">确定</el-button>
+        <el-button @click="ebookAdopt = false">关闭</el-button>
+      </span>
+    </el-dialog>
+
+    <!--审核列表-驳回-->
+    <el-dialog title="提示" width="50%" :visible.sync="ebookReject">
+      <div style="margin: 10px">
+        <span style="font-size: 24px">即将执行驳回上传电子书《{{ebookNames}}》上传的操作，请确定是否执行</span>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="ebooksReject">确定</el-button>
+        <el-button @click="ebookReject = false">关闭</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import {auditListQueryAll} from "@/api/ebook";
+import {auditListQueryAll,auditListAdopt,auditListReject} from "@/api/ebook";
 
 
 export default {
@@ -91,6 +115,8 @@ export default {
       ebookCategory: '',
       // 电子书名称
       ebookName: '',
+      ebookNames: '',
+      ebookId: '',
       ebookBriefInformation: '',
       // 电子书列表
       ebooks: [],
@@ -98,6 +124,8 @@ export default {
       ebookBriefInformationDialogTitle:'',
       // 弹窗控制参数
       ebookBriefInformationDialog: false,
+      ebookAdopt: false,
+      ebookReject: false,
       deleteEbookDialog: false,
       cancelEbookDialog: false,
       insertEbookDialog: false,
@@ -141,8 +169,44 @@ export default {
     openIntroduction(row) {
       this.ebookBriefInformationDialog = true
       this.ebookBriefInformation = row.ebookBriefInformation
-      this.ebookBriefInformationDialogTitle = "电子书名称：" + row.bookName
+      this.ebookBriefInformationDialogTitle = "电子书名称：" + row.ebookName
     },
+    // 按钮——审核通过
+    ebookAdopts(row){
+      this.ebookNames = row.ebookName
+      this.ebookId = row.ebookId
+      this.ebookAdopt = true
+    },
+    // 按钮——审核通过
+    ebooksAdopt(){
+      auditListAdopt({
+        ebookId: this.ebookId,
+        ebookName: this.ebookNames
+      }).then(
+        async response =>{
+          const {data} = response
+          this.ebookAdopt = false
+          this.selectEbookByConditions()
+        })
+    },
+    // 按钮——审核驳回
+    ebookRejects(row){
+      this.ebookNames = row.ebookName
+      this.ebookId = row.ebookId
+      this.ebookReject = true
+    },
+    // 按钮——审核驳回
+    ebooksReject(){
+      auditListReject({
+        ebookId: this.ebookId,
+        ebookName: this.ebookNames
+      }).then(
+        async response =>{
+          const {data} = response
+          this.ebookReject = false
+          this.selectEbookByConditions()
+        })
+    }
   }
 }
 </script>

@@ -4,12 +4,43 @@
 
     <resultMap type="tsl.campus_book_sharing_platform.ebookShelf.entity.EbookShelf" id="EbookShelfMap">
         <result property="userId" column="user_id" jdbcType="VARCHAR"/>
-        <result property="ebookId" column="ebook_id" jdbcType="VARCHAR"/>
+        <result property="ebookName" column="ebook_name" jdbcType="VARCHAR"/>
         <result property="ebookCategory" column="ebook_category" jdbcType="VARCHAR"/>
         <result property="ebookSize" column="ebook_size" jdbcType="VARCHAR"/>
         <result property="ebookRead" column="ebook_read" jdbcType="INTEGER"/>
+        <result property="ebookPage" column="ebook_page" jdbcType="INTEGER"/>
     </resultMap>
 
+    <!--根据电子书名和用户名删除收藏信息-->
+    <delete id="ebookShelfDelete">
+        delete from ebook_shelf where ebook_name = #{ebookName} and user_id = #{userId}
+    </delete>
 
+    <!--书架——新增-->
+    <insert id="ebookShelfInsert" keyProperty="userId" useGeneratedKeys="true">
+        insert into ebook_shelf(user_id,ebook_name, ebook_category, ebook_size, ebook_read, ebook_page)
+        values (#{userId},#{ebookName}, #{ebookCategory}, #{ebookSize}, #{ebookRead}, #{ebookPage})
+    </insert>
+
+    <!--查询是否已收藏-->
+    <select id="ebookShelfSelectSum" resultType="integer">
+        select count(user_id) from ebook_shelf where user_id = #{userId} and ebook_name = #{ebookName}
+    </select>
+
+    <!--书架——条件查询-->
+    <select id="ebookShelfQuarryAll" resultMap="EbookShelfMap">
+        select
+        user_id, ebook_name, ebook_category, ebook_size, ebook_read, ebook_page
+        from ebook_shelf
+        <where>
+            <if test="ebookCategory != null and ebookCategory != ''">
+                ebook_category like concat('%',#{ebookCategory,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="ebookName != null and ebookName != ''">
+                and ebook_name like concat('%',#{ebookName,jdbcType=VARCHAR},'%')
+            </if>
+            and user_id = #{userId}
+        </where>
+    </select>
 </mapper>
 

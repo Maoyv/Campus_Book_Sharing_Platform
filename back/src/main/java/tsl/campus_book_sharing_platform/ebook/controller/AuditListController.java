@@ -36,5 +36,27 @@ public class AuditListController {
     public ResultFormat queryAll(String ebookCategory, String ebookName, HttpSession session){
         return service.auditListQueryAll( ebookCategory, ebookName, session);
     }
+
+    /**
+     * 审核列表-上传成功
+     *
+     * @param ebookId   电子书ID
+     * @return 对象列表
+     */
+    @RequestMapping(value = "/adopt",method = RequestMethod.GET)
+    public ResultFormat adopt(String ebookId,String ebookName,HttpSession session){
+        return service.update(ebookId,ebookName,"上传成功", session);
+    }
+
+    /**
+     * 审核列表-驳回
+     *
+     * @param ebookId   电子书ID
+     * @return 对象列表
+     */
+    @RequestMapping(value = "/reject",method = RequestMethod.GET)
+    public ResultFormat reject(String ebookId,String ebookName,HttpSession session){
+        return service.update(ebookId,ebookName,"已驳回", session);
+    }
 }
 
