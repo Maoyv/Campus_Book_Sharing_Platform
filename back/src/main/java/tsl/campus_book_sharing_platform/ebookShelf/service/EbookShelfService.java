@@ -1,5 +1,9 @@
 package tsl.campus_book_sharing_platform.ebookShelf.service;
 
+import tsl.campus_book_sharing_platform.uitl.ResultFormat;
+
+import javax.servlet.http.HttpSession;
+
 /**
  * (EbookShelf)表服务接口
  *
@@ -8,5 +12,20 @@ package tsl.campus_book_sharing_platform.ebookShelf.service;
  */
 public interface EbookShelfService {
 
+    /**
+     * 书架-取消收藏
+     *
+     * @param ebookName   电子书名称
+     * @return 对象列表
+     */
+    ResultFormat ebookShelfCancelCollection(String ebookName, HttpSession session);
 
+    /**
+     * 书架-分页查询
+     *
+     * @param ebookName   电子书名称
+     * @param ebookCategory   电子书分类
+     * @return 对象列表
+     */
+    ResultFormat ebookShelfQuarryAll(String ebookName,String ebookCategory, HttpSession session);
 }

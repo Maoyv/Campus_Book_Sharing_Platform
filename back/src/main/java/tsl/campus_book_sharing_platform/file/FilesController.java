@@ -1,14 +1,19 @@
 package tsl.campus_book_sharing_platform.file;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import tsl.campus_book_sharing_platform.ebook.service.EbookService;
 import tsl.campus_book_sharing_platform.uitl.ResultFormat;
 import tsl.campus_book_sharing_platform.uitl.ResultUtil;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Arrays;
@@ -22,10 +27,22 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/file")
+/**
+ * @author TSL
+ * (User)表服务实现类
+ * 表明该类（class）或方法（method）受事务控制
+ * @param propagation  设置隔离级别
+ * @param isolation 设置传播行为
+ * @param rollbackFor 设置需要回滚的异常类，默认为RuntimeException
+ */
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
 public class FilesController {
 
     @Value("${file.upload.url}")
     private String uploadFilePath;
+
+    @Resource
+    private EbookService ebookService;
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ResultFormat httpUpload(@RequestParam("file") MultipartFile[] file){
@@ -40,7 +57,7 @@ public class FilesController {
         }
         File dest = new File(uploadFilePath + '/' + fileName);
         if (dest.exists()) {
-            return ResultUtil.error(-1, "该名称的电子书已存在，请勿重复上传");
+            return ResultUtil.error(-1, "该电子书已上传或正在审核中，请勿重复上传");
         }
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
@@ -74,6 +91,7 @@ public class FilesController {
         if (!file.exists()) {
             return ResultUtil.error(-1, "下载的电子书文件不存在");
         } else {
+            ebookService.download(fileName);
             return ResultUtil.success("下载的电子书文件存在");
         }
     }
