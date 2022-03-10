@@ -34,6 +34,8 @@
             <el-divider direction="vertical"></el-divider>
             <el-button   type="text" size="small" @click="collection(scope.row)">收藏</el-button>
             <el-divider direction="vertical"></el-divider>
+            <el-button   type="text" size="small" @click="openEbookContent(scope.row)">阅读</el-button>
+            <el-divider direction="vertical"></el-divider>
             <el-button   type="text" size="small" @click="download(scope.row)">下载</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button   type="text" size="small" @click="update(scope.row)">修改</el-button>
@@ -59,6 +61,8 @@
             <el-divider direction="vertical"></el-divider>
             <el-button   type="text" size="small" @click="collection(scope.row)">收藏</el-button>
             <el-divider direction="vertical"></el-divider>
+            <el-button   type="text" size="small" @click="openEbookContent(scope.row)">阅读</el-button>
+            <el-divider direction="vertical"></el-divider>
             <el-button   type="text" size="small" @click="download(scope.row)">下载</el-button>
           </template>
         </el-table-column>
@@ -77,6 +81,8 @@
           <template slot-scope="scope">
             <!--传入的scope.row参数为当前行的数据-->
             <el-button  type="text" size="small" @click="openIntroduction(scope.row)">简介</el-button>
+            <el-divider direction="vertical"></el-divider>
+            <el-button   type="text" size="small" @click="openEbookContent(scope.row)">阅读</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button   type="text" size="small" @click="download(scope.row)">下载</el-button>
           </template>
@@ -163,13 +169,30 @@
       </span>
     </el-dialog>
 
+    <!--阅读-->
+    <el-dialog :title="ebookContentDialogTitle" width="50%" :visible.sync="ebookContentDialog" @close="cancel" @cancel="cancel">
+      <div style="text-align: center">
+        <textarea disabled style="resize:none;border:0;border-radius:5px;background-color:rgba(241,241,241,.98);width: 100%;height: 450px;font-size: 24px">{{this.ebookContent}}</textarea>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button :disabled="this.readPage === 1" @click="upper" style="margin-right: 15px" type="primary" >上一页</el-button>
+        <span style="font-size: 22px">第 </span>
+        <el-input-number  v-model="readPages" :min=1 :max=2147483646 style="width: 5%" :controls="false" filterable clearable/>
+        <span style="font-size: 22px;margin-right: 15px"> 页</span>
+        <el-button @click="jump" style="margin-right: 15px" type="success" >跳转</el-button>
+        <el-button @click="lower" type="primary" style="margin-right: 15px">下一页</el-button>
+        <el-button @click="ebookContentDialog = false" >关闭</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import {downloads} from "@/api/file";
-import {libraryQueryAll,libraryCollection,libraryUpdate,libraryDelete} from "@/api/ebook";
+import {libraryQueryAll, libraryCollection, libraryUpdate, libraryDelete, read} from "@/api/ebook";
 
 
 export default {
@@ -198,16 +221,24 @@ export default {
       ebooks: [],
       // 表单变量参数
       ebookBriefInformationDialogTitle:'',
+      ebookContentDialogTitle: '',
       // 弹窗控制参数
       ebookBriefInformationDialog: false,
       downloadDialog: false,
       collectionDialog: false,
       updateDialog: false,
       deleteDialog: false,
+      ebookContentDialog: false,
       // 按钮控制参数
       adminEbookForm: false,
       userEbookForm: false,
       touristsEbookForm: false,
+      // 阅读参数
+      readPage: 0,
+      readPages: undefined,
+      ebookContent: '',
+      readState: '审核',
+      row: '',
     }
   },
   mounted() {
@@ -226,6 +257,88 @@ export default {
     // 翻页
     handleCurrentChange: function (currentPage) {
       this.currentPage = currentPage;
+    },
+    // 打开审核阅读页面
+    openEbookContent(row) {
+      this.row = row
+      this.readPage = 1
+      this.readPages = 1
+      this.ebookContentDialog = true
+      this.ebookContentDialogTitle = "电子书审核：" + row.ebookName
+      read({
+        ebookRead: this.readPage,
+        ebookName: row.ebookName,
+        readState: this.readState
+      }).then(
+        async response =>{
+          if(response.code === -1){
+            this.$message.error(response.message)
+          }else {
+            this.ebookContent = response.data
+          }
+        })
+    },
+    upper(){
+      if(this.readPage === 1){
+        this.$message.error("已经是首页了，无法跳转")
+      }else {
+        let a = this.readPage
+        a --
+        read({
+          ebookRead: a,
+          ebookName: this.row.ebookName,
+          readState: this.readState
+        }).then(
+          async response =>{
+            if(response.code === -1){
+              this.$message.error(response.message)
+            }else {
+              this.ebookContent = response.data
+              this.readPage = a
+              this.readPages = a
+            }
+          })
+      }
+    },
+    lower(){
+      let a = this.readPage
+      a ++
+      read({
+        ebookRead: a,
+        ebookName: this.row.ebookName,
+        readState: this.readState
+      }).then(
+        async response =>{
+          if(response.code === -1){
+            this.$message.error(response.message)
+          }else {
+            this.ebookContent = response.data
+            this.readPage = a
+            this.readPages = a
+          }
+        })
+    },
+    jump(){
+      if(this.readPage === this.readPages){
+
+      }else {
+        read({
+          ebookRead: this.readPages,
+          ebookName: this.row.ebookName,
+          readState: this.readState
+        }).then(
+          async response =>{
+            if(response.code === -1){
+              this.$message.error(response.message)
+            }else {
+              this.ebookContent = response.data
+              this.readPage = this.readPages
+            }
+          })
+      }
+    },
+    cancel(){
+      this.ebookContent = ''
     },
     // 按钮控制
     buttonController(){

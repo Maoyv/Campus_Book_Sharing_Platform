@@ -42,5 +42,16 @@
             and user_id = #{userId}
         </where>
     </select>
+
+    <!--更改读取进度-->
+    <update id="ebookShelfReadUpdate">
+        update ebook_shelf
+        <set>
+            <if test="ebookRead != null and ebookRead != ''">
+                ebook_read = #{ebookRead}
+            </if>
+        </set>
+        where user_id = #{userId} and ebook_name = #{ebookName}
+    </update>
 </mapper>
 

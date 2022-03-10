@@ -17,7 +17,6 @@ public interface EbookShelfDao {
      *
      * @param ebookName   电子书名称
      * @param userId   用户名称
-     * @return 对象列表
      */
     void ebookShelfDelete(String ebookName,String userId);
 
@@ -25,7 +24,6 @@ public interface EbookShelfDao {
      * 书架——新增
      *
      * @param ebookShelf   收藏信息
-     * @return 对象列表
      */
     void ebookShelfInsert(EbookShelf ebookShelf);
 
@@ -47,5 +45,15 @@ public interface EbookShelfDao {
      * @return 对象列表
      */
     List<EbookShelf> ebookShelfQuarryAll(String userId,String ebookName,String ebookCategory);
+
+
+    /**
+     * 修改读取进度
+     *
+     * @param ebookRead   读取进度
+     * @param ebookName   电子书名称
+     * @param userId   用户名称
+     */
+    void ebookShelfReadUpdate(Integer ebookRead,String userId,String ebookName);
 }
 

@@ -239,7 +239,7 @@ public class EbookServiceImpl implements EbookService {
         ebookShelf.setEbookCategory(ebook.getEbookCategory());
         ebookShelf.setEbookSize(ebook.getEbookSize());
         ebookShelf.setEbookRead(0);
-        ebookShelf.setEbookPage(Math.toIntExact(dest.length()/1200 + 1));
+        ebookShelf.setEbookPage(Math.toIntExact(dest.length()/1024 + 1));
         ebookShelfDao.ebookShelfInsert(ebookShelf);
         return ResultUtil.success("收藏成功");
     }

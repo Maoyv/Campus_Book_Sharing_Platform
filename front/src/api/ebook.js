@@ -116,3 +116,12 @@ export function ebookShelfQuarryAll(params) {
     params
   })
 }
+
+// 阅读
+export function read(params) {
+  return request({
+    url: '/ebookShelf/read',
+    method: 'get',
+    params
+  })
+}

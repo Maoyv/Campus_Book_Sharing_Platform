@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
 /**
  * @author TSL
  * @data    :   2021/12/1
@@ -18,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableScheduling
 public class BackEndApplication {
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
         SpringApplication.run(BackEndApplication.class, args);
     }
 
