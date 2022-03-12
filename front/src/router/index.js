@@ -54,17 +54,17 @@ export const constantRoutes = [
       meta: { title: '主页', icon: 'table' }
     }]
   },
-  {
-    path: '/file',
-    component: Layout,
-    redirect: '/file',
-    children: [{
-      path: 'file',
-      name: '文件操作',
-      component: () => import('@/views/file/index'),
-      meta: { title: '文件操作', icon: 'table' }
-    }]
-  },
+  // {
+  //   path: '/file',
+  //   component: Layout,
+  //   redirect: '/file',
+  //   children: [{
+  //     path: 'file',
+  //     name: '文件操作',
+  //     component: () => import('@/views/file/index'),
+  //     meta: { title: '文件操作', icon: 'table' }
+  //   }]
+  // },
 
 ]
 
