@@ -114,28 +114,28 @@ export const asyncRoutes  = [
     },
     children: [
       {
-        path: 'ebookShelf',
-        component: () => import('@/views/ebook/ebookShelf/index'),
-        name: '书架',
-        meta: { title: '书架',roles:["admin","user"] },
-      },
-      {
         path: 'library',
         component: () => import('@/views/ebook/library/index'),
         name: '书库',
         meta: { title: '书库',roles:["admin","user","tourists"] },
       },
       {
-        path: 'auditList',
-        component: () => import('@/views/ebook/auditList/index'),
-        name: '审核列表',
-        meta: { title: '审核列表',roles:["admin"] },
+        path: 'ebookShelf',
+        component: () => import('@/views/ebook/ebookShelf/index'),
+        name: '书架',
+        meta: { title: '书架',roles:["admin","user"] },
       },
       {
         path: 'uploadList',
         component: () => import('@/views/ebook/uploadList/index'),
         name: '上传列表',
         meta: { title: '上传列表',roles:["admin","user"] },
+      },
+      {
+        path: 'auditList',
+        component: () => import('@/views/ebook/auditList/index'),
+        name: '审核列表',
+        meta: { title: '审核列表',roles:["admin"] },
       },
     ]
   },
