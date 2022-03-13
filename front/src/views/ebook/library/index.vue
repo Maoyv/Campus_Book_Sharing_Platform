@@ -27,7 +27,7 @@
         <el-table-column align="center" fixed prop="downloadTimes" sortable label="下载次数"/>
         <el-table-column align="center" fixed prop="downloadUserName" sortable label="上传者"/>
         <el-table-column align="center" fixed prop="ebookSize" sortable label="电子书大小"/>
-        <el-table-column align="center" fixed="right" label="操作" width="320px">
+        <el-table-column align="center" fixed="right" label="操作" width="300px">
           <template slot-scope="scope">
             <!--传入的scope.row参数为当前行的数据-->
             <el-button  type="text" size="small" @click="openIntroduction(scope.row)">简介</el-button>
@@ -39,8 +39,6 @@
             <el-button   type="text" size="small" @click="download(scope.row)">下载</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button   type="text" size="small" @click="update(scope.row)">修改</el-button>
-            <el-divider direction="vertical"></el-divider>
-            <el-button   type="text" size="small" @click="libraryDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
