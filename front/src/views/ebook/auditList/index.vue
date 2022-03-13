@@ -21,7 +21,7 @@
       <!--登录表单-->
       <el-table  :data="ebooks.slice((currentPage-1)*pageSize,currentPage*pageSize)" height="659px" border style="width: 100%">
         <el-table-column align="center" fixed prop="ebookId" sortable label="电子书ID"/>
-        <el-table-column align="center" fixed prop="ebookName" sortable label="电子名称"/>
+        <el-table-column align="center" fixed prop="ebookName" sortable label="电子书名称"/>
         <el-table-column align="center" fixed prop="ebookCategory" sortable label="电子书分类"/>
         <el-table-column align="center" fixed prop="ebookSize" sortable label="电子书大小"/>
         <el-table-column align="center" fixed prop="ebookState" sortable label="审核状态"/>
