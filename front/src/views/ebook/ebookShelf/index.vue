@@ -28,8 +28,7 @@
         <el-table-column align="center" fixed="right" label="操作">
           <template slot-scope="scope">
             <!--传入的scope.row参数为当前行的数据-->
-            <el-button @click="openIntroduction(scope.row)" type="text" size="small">简介</el-button>
-            <el-divider direction="vertical"></el-divider>
+
             <el-button  type="text" size="small" @click="openEbookContent(scope.row)">阅读</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button @click="download(scope.row)" type="text" size="small">下载</el-button>
