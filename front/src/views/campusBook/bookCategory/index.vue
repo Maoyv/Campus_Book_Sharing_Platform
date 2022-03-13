@@ -41,7 +41,7 @@
     <el-dialog :title="title" width="35%" :visible.sync="insertOrUpdate">
       <el-form>
         <el-form-item label="请输入新的图书类别" label-width="35%">
-          <el-input v-model="newBookCategory" clearable style="width: 90%"></el-input>
+          <el-input v-model="newBookCategory" maxlength="10" clearable style="width: 90%"></el-input>
         </el-form-item>
       </el-form>
 
